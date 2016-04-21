@@ -9,28 +9,26 @@ class App implements CommandLineRunner {
 	}
     
     @Autowired
-    private final MyService myService
+    private final Metrics metrics
 
     @Override
     void run(String... args) { 
-        long counter = myService.get('someKey')
-        long counter2 = myService.get('someKey')
-        if (counter == counter2) {
-            println "Hello World $counter"
-        } else {
-            println "Something went wrong with the cache setup $counter and $counter2"
+        long counter = metrics.count('hello')
+        if (counter != metrics.count('hello')) {
+            throw new RuntimeException("Something went wrong with the cache setup")
         }
+        println "Hello World " + metrics.count('hello') + " " + metrics.count('world')
     }
 
 }
 
 @Component
- class MyService {
+class Metrics {
 
     private final AtomicLong counter = new AtomicLong(1)
 
-    @Cacheable('foo')
-    Long get(String id) {
+    @Cacheable('metrics')
+    Long count(String id) {
         return counter.getAndIncrement()
     }
 
