@@ -1,3 +1,4 @@
+@Grab("spring-boot-starter-actuator")
 @RestController
 class Web {
     String color = "blue";
